@@ -1,10 +1,11 @@
-// SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
+//SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Payouts {
-    constructor() public {
+    constructor() {
         admins[msg.sender] = true;
     }
 
