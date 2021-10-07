@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import EthereumProvider from './providers/EthereumProvider';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <EthereumProvider>
+      <App />
+    </EthereumProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

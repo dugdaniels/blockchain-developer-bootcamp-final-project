@@ -1,7 +1,11 @@
+import { useEthereum } from './providers/EthereumProvider';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const { address } = useEthereum();
+  console.log("Address:", address);
+
   return (
     <div className="App">
       <header className="App-header">
