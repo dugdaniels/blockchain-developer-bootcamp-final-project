@@ -4,41 +4,34 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Payouts {
-    constructor() {
-        admins[msg.sender] = true;
+contract Payouts is Ownable {    
+    
+    struct Payee {
+        address account;
+        uint split;
+        uint balance;
     }
 
-    mapping(address => bool) public admins;
-    mapping(address => uint) public balances;
+    mapping(address => bool) public isPayee;
+    Payee[] public payees;
 
-    modifier onlyAdmin() {
-        require(admins[msg.sender], "caller is not an admin");
-        _;
+    function addPayee(address _address, uint _split) public onlyOwner {
+        require(!isPayee[_address], "Account already added as a payee");
+        require(_address != address(0), "Can't add the zero address as a payee");
+        isPayee[_address] = true;
+        payees.push(Payee({
+            account: _address,
+            split: _split,
+            balance: 0
+        }));
     }
 
-    function addAdmin(address _address) public onlyAdmin {
+    // function getBalance() public view {
 
-    }
+    // }
 
-    function removeAdmin(address _address) public onlyAdmin {
+    // function withdraw() public {
 
-    }
-
-    function addPayee(address _address) public onlyAdmin {
-
-    }
-
-    function removePayee(address _address) public onlyAdmin {
-
-    }
-
-    function getBalance() public view {
-
-    }
-
-    function withdraw() public {
-
-    }
+    // }
     
 }
