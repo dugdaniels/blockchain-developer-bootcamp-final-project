@@ -73,4 +73,39 @@ describe("Payouts contract", () => {
       ).to.be.revertedWith("Can't add the zero address as a payee");
     });
   });
+
+  describe("Removing payees", () => {
+    it("Should allow a payee to be removed", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.addPayee(acct3.address, 1);
+      await payouts.addPayee(acct4.address, 1);
+      let payeeList = await payouts.getPayees();
+      expect(payeeList.length).to.equal(3);
+
+      await payouts.removePayee(acct3.address);
+      payeeList = await payouts.getPayees();
+      expect(payeeList.length).to.equal(2);
+
+      expect(payeeList[0]).to.equal(acct2.address);
+      expect(payeeList[1]).to.equal(acct4.address);
+    });
+
+    it("Should set a payee split to zero when removed", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.removePayee(acct2.address);
+      expect(await payouts.getPayeeSplit(acct2.address)).to.equal(0);
+    });
+
+    it("Should only allow removing payees that have a split allocated", async () => {
+      await expect(
+        payouts.removePayee(acct2.address)
+      ).to.be.revertedWith("Account not listed added as a payee");
+    });
+
+    it("Removing all payees should set the payout to inactive", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.removePayee(acct2.address);
+      expect(await payouts.isActivated()).to.equal(false);
+    });
+  });
 });

@@ -30,6 +30,26 @@ contract Payouts {
 
         payees[msg.sender].push(_payeeAddress);
         splits[msg.sender][_payeeAddress] = _payeeSplit;
+
+        _updateActivated(msg.sender);
+    }
+
+    function removePayee(address _payeeAddress) public {
+        require(splits[msg.sender][_payeeAddress] > 0, "Account not listed added as a payee");
+
+        address[] storage payeeList = payees[msg.sender];
+        
+        uint index;
+        for (index; index < payeeList.length; index++) {
+            if (payeeList[index] == _payeeAddress) {
+                break;
+            }
+        }
+
+        payeeList[index] = payeeList[payeeList.length - 1];
+        payeeList.pop();
+        splits[msg.sender][_payeeAddress] = 0;
+        
         _updateActivated(msg.sender);
     }
 
