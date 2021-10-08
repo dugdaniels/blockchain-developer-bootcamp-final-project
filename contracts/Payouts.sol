@@ -38,7 +38,7 @@ contract Payouts {
         require(splits[msg.sender][_payeeAddress] > 0, "Account not listed added as a payee");
 
         address[] storage payeeList = payees[msg.sender];
-        
+
         uint index;
         for (index; index < payeeList.length; index++) {
             if (payeeList[index] == _payeeAddress) {
@@ -51,6 +51,15 @@ contract Payouts {
         splits[msg.sender][_payeeAddress] = 0;
         
         _updateActivated(msg.sender);
+    }
+
+    function editPayee(address _originalPayeeAddress, address _newPayeeAddress, uint _payeeSplit) public {
+        if (_originalPayeeAddress != _newPayeeAddress) {
+            removePayee(_originalPayeeAddress);
+            addPayee(_newPayeeAddress, _payeeSplit);
+        } else if (splits[msg.sender][_newPayeeAddress] != _payeeSplit) {
+            splits[msg.sender][_newPayeeAddress] = _payeeSplit;
+        }
     }
 
     function getPayees() public view returns (address[] memory) {
