@@ -12,7 +12,7 @@ describe("Payouts contract", () => {
 
   beforeEach(async () => {
     Payouts = await ethers.getContractFactory("Payouts");
-    [acct1, acct2] = await ethers.getSigners();
+    [acct1, acct2, acct3, acct4] = await ethers.getSigners();
     payouts = await Payouts.deploy();
   }) 
 
@@ -37,6 +37,35 @@ describe("Payouts contract", () => {
       await payouts.addPayee(acct2.address, 1);
       const payeeList = await payouts.getPayees();
       expect(payeeList[0]).to.equal(acct2.address);
+      expect(await payouts.getPayeeSplit(payeeList[0])).to.equal(1);
+    });
+
+    it("Should allow multiple payees to be added", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.addPayee(acct3.address, 1);
+      await payouts.addPayee(acct4.address, 1);
+      const payeeList = await payouts.getPayees();
+      expect(payeeList.length).to.equal(3);
+    });
+
+    it("Should require a non-zero split to be set", async () => {
+      await expect(
+        payouts.addPayee(acct1.address, 0)
+      ).to.be.revertedWith("You must allocate a non-zero split");
+    });
+
+    it("Should prevent a payee from being added more than once", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await expect(
+        payouts.addPayee(acct2.address, 1)
+      ).to.be.revertedWith("Account already added as a payee");
+    });
+
+    it("Should prevent the zero account from being added as a payee", async () => {
+      const zeroAddress = "0x0000000000000000000000000000000000000000";
+      await expect(
+        payouts.addPayee(zeroAddress, 1)
+      ).to.be.revertedWith("Can't add the zero address as a payee");
     });
   });
 });

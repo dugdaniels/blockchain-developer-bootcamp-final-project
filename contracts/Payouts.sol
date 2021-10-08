@@ -33,6 +33,10 @@ contract Payouts {
         return payees[msg.sender];
     }
 
+    function getPayeeSplit(address _payeeAddress) public view returns (uint) {
+        return splits[msg.sender][_payeeAddress];
+    }
+
     function getBalance() public view returns (uint) {
         return balances[msg.sender];
     }
