@@ -2,33 +2,40 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Payouts is Ownable {    
+contract Payouts {    
     
-    struct Payee {
-        address account;
-        uint split;
-        uint balance;
+    mapping(address => uint) balances;
+
+    mapping(address => bool) public activated;
+    mapping(address => address[]) payees;
+    mapping(address => mapping(address => uint)) splits;
+
+    function addPayee(address _payeeAddress, uint _payeeSplit) public {
+        require(splits[msg.sender][_payeeAddress] == 0, "Account already added as a payee");
+        require(_payeeAddress != address(0), "Can't add the zero address as a payee");
+        require(_payeeSplit > 0, "You must allocate a non-zero split");
+
+        payees[msg.sender].push(_payeeAddress);
+        splits[msg.sender][_payeeAddress] = _payeeSplit;
+        updateActivated(msg.sender);
     }
 
-    mapping(address => bool) public isPayee;
-    Payee[] public payees;
+    function updateActivated(address _payoutsAddress) private {
+        if (payees[_payoutsAddress].length == 0 && activated[_payoutsAddress]) {
+            activated[_payoutsAddress] = false;
+        } else if (!activated[_payoutsAddress]) {
+            activated[_payoutsAddress] = true;
+        }
+    } 
 
-    function addPayee(address _address, uint _split) public onlyOwner {
-        require(!isPayee[_address], "Account already added as a payee");
-        require(_address != address(0), "Can't add the zero address as a payee");
-        isPayee[_address] = true;
-        payees.push(Payee({
-            account: _address,
-            split: _split,
-            balance: 0
-        }));
+    function getPayees() public view returns (address[] memory) {
+        return payees[msg.sender];
     }
 
-    // function getBalance() public view {
-
-    // }
+    function getBalance() public view returns (uint) {
+        return balances[msg.sender];
+    }
 
     // function withdraw() public {
 
