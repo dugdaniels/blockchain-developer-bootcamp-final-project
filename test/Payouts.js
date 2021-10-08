@@ -18,7 +18,7 @@ describe("Payouts contract", () => {
 
   describe("Deployment", () => {
     it("Should initialize payouts as inactive", async () => {
-      expect(await payouts.activated(acct1.address)).to.equal(false);
+      expect(await payouts.isActivated()).to.equal(false);
     });
     
     it("Should initialize payouts with no payees", async () => {
@@ -46,6 +46,11 @@ describe("Payouts contract", () => {
       await payouts.addPayee(acct4.address, 1);
       const payeeList = await payouts.getPayees();
       expect(payeeList.length).to.equal(3);
+    });
+
+    it("Should set the payout to active when the first payee is added", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      expect(await payouts.isActivated()).to.equal(true);
     });
 
     it("Should require a non-zero split to be set", async () => {
