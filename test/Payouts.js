@@ -109,7 +109,7 @@ describe("Payouts contract", () => {
     });
   });
 
-  describe("Edit payee", () => {    
+  describe("Editing payees", () => {    
     it("Should let you update a payee address", async () => {
       await payouts.addPayee(acct2.address, 1);
       await payouts.editPayee(acct2.address, acct3.address, 1);
@@ -141,5 +141,21 @@ describe("Payouts contract", () => {
 
       expect(await payouts.getPayeeSplit(acct2.address)).to.equal(2);
     });
+  });
+
+  describe("Routing payments", () => {
+    it("Should split payments among payees", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.addPayee(acct3.address, 1);
+
+      const transactionHash = await acct1.sendTransaction({
+        to: payouts.address,
+        value: 2,
+      });
+
+      expect(await payouts.connect(acct1).getBalance()).to.equal(0);
+      expect(await payouts.connect(acct2).getBalance()).to.equal(1);
+      expect(await payouts.connect(acct3).getBalance()).to.equal(1);
+    })
   });
 });

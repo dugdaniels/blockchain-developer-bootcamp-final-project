@@ -74,8 +74,35 @@ contract Payouts {
         return balances[msg.sender];
     }
 
+    function routePayment(uint _paymentValue) internal {
+        if (_paymentValue < payees[msg.sender].length) {
+            balances[msg.sender] += _paymentValue;
+        } else {
+            address[] storage payeeList = payees[msg.sender];
+            uint totalSplit;
+            uint remainingInPayment = _paymentValue;
+
+            for (uint i; i < payeeList.length; i++) {
+                totalSplit += splits[msg.sender][payeeList[i]];
+            }
+            for (uint i; i < payeeList.length; i++) {
+                uint payment = _paymentValue / totalSplit * splits[msg.sender][payeeList[i]];
+                remainingInPayment -= payment;
+                balances[payeeList[i]] += payment;
+            }
+            balances[msg.sender] += remainingInPayment;
+        }
+    }
+
     // function withdraw() public {
 
     // }
+
+    receive() external payable {
+        require(activated[msg.sender]);
+        if (msg.value > 0) {
+            routePayment(msg.value);
+        }
+    }
     
 }
