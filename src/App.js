@@ -1,10 +1,13 @@
-import { useEthereum } from './providers/EthereumProvider';
-import logo from './logo.svg';
-import './App.css';
+import { useEthereum } from "./providers/EthereumProvider";
+import { usePayouts } from "./providers/PayoutsProvider";
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
   const { address } = useEthereum();
+  const payouts = usePayouts();
   console.log("Address:", address);
+  console.log(payouts.address);
 
   return (
     <div className="App">

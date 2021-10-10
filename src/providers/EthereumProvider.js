@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { useCallback } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const EthereumContext = createContext();
@@ -14,28 +15,28 @@ const EthereumProvider = (props) => {
     setSigner(provider.getSigner());
   }
 
-  async function getAddress() {
+  const getAddress = useCallback(async () => {
     const [address] = await provider.send("eth_requestAccounts", []);
     setAddress(address);
-  }
+  }, [provider]);
 
-  function setInitialProvider() {
+  const setInitialProvider = useCallback(() => {
     const ethereum = window.ethereum;
     if (!ethereum) {
       updateProvider(ethers.getDefaultProvider());
     } else {
       updateProvider(new ethers.providers.Web3Provider(window.ethereum));
     }
-  }
+  }, []);
   
   useEffect(() => {
     setInitialProvider();
     setInitialized(true);
-  }, []);
+  }, [setInitialProvider]);
 
   useEffect(() => {;
     if (initialized) getAddress();
-  }, [initialized]);
+  }, [initialized, getAddress]);
 
   const variables = { provider, signer, address };
   const functions = { setAddress, getAddress }

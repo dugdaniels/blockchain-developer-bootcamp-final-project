@@ -1,14 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import EthereumProvider from './providers/EthereumProvider';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import EthereumProvider from "./providers/EthereumProvider";
+import PayoutsProvider from "./providers/PayoutsProvider";
 
 ReactDOM.render(
   <React.StrictMode>
     <EthereumProvider>
-      <App />
+      <PayoutsProvider>
+        <App />
+      </PayoutsProvider>
     </EthereumProvider>
   </React.StrictMode>,
   document.getElementById('root')
