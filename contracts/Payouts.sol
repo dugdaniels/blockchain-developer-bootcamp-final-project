@@ -4,11 +4,12 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 
 contract Payouts {    
-    
+
     mapping(address => uint) balances;
 
     mapping(address => bool) activated;
     mapping(address => address[]) payees;
+    mapping(address => uint) totalAllocations;
     mapping(address => mapping(address => uint)) splits;
 
     function _updateActivated(address _payoutsAddress) internal {
@@ -29,6 +30,7 @@ contract Payouts {
         require(_payeeSplit > 0, "You must allocate a non-zero split");
 
         payees[msg.sender].push(_payeeAddress);
+        totalAllocations[msg.sender] += _payeeSplit;
         splits[msg.sender][_payeeAddress] = _payeeSplit;
 
         _updateActivated(msg.sender);
@@ -48,6 +50,7 @@ contract Payouts {
 
         payeeList[index] = payeeList[payeeList.length - 1];
         payeeList.pop();
+        totalAllocations[msg.sender] -= splits[msg.sender][_payeeAddress];
         splits[msg.sender][_payeeAddress] = 0;
         
         _updateActivated(msg.sender);
@@ -58,6 +61,14 @@ contract Payouts {
             removePayee(_originalPayeeAddress);
             addPayee(_newPayeeAddress, _payeeSplit);
         } else if (splits[msg.sender][_newPayeeAddress] != _payeeSplit) {
+            uint splitDifference;
+            if (splits[msg.sender][_newPayeeAddress] > _payeeSplit) {
+                splitDifference = splits[msg.sender][_newPayeeAddress] - _payeeSplit;
+                totalAllocations[msg.sender] -= splitDifference;
+            } else {
+                splitDifference = _payeeSplit - splits[msg.sender][_newPayeeAddress];
+                totalAllocations[msg.sender] += splitDifference;
+            }
             splits[msg.sender][_newPayeeAddress] = _payeeSplit;
         }
     }
@@ -79,14 +90,9 @@ contract Payouts {
             balances[msg.sender] += _paymentValue;
         } else {
             address[] storage payeeList = payees[msg.sender];
-            uint totalSplit;
             uint remainingInPayment = _paymentValue;
-
             for (uint i; i < payeeList.length; i++) {
-                totalSplit += splits[msg.sender][payeeList[i]];
-            }
-            for (uint i; i < payeeList.length; i++) {
-                uint payment = _paymentValue / totalSplit * splits[msg.sender][payeeList[i]];
+                uint payment = _paymentValue / totalAllocations[msg.sender] * splits[msg.sender][payeeList[i]];
                 remainingInPayment -= payment;
                 balances[payeeList[i]] += payment;
             }
@@ -99,7 +105,7 @@ contract Payouts {
     // }
 
     receive() external payable {
-        require(activated[msg.sender]);
+        require(activated[msg.sender], "This payout is not active");
         if (msg.value > 0) {
             routePayment(msg.value);
         }

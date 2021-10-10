@@ -148,7 +148,7 @@ describe("Payouts contract", () => {
       await payouts.addPayee(acct2.address, 1);
       await payouts.addPayee(acct3.address, 1);
 
-      const transactionHash = await acct1.sendTransaction({
+      await acct1.sendTransaction({
         to: payouts.address,
         value: 2,
       });
@@ -156,6 +156,61 @@ describe("Payouts contract", () => {
       expect(await payouts.connect(acct1).getBalance()).to.equal(0);
       expect(await payouts.connect(acct2).getBalance()).to.equal(1);
       expect(await payouts.connect(acct3).getBalance()).to.equal(1);
-    })
+    });
+
+    it("Should weight splits based on payee allocation", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.addPayee(acct3.address, 3);
+
+      await acct1.sendTransaction({
+        to: payouts.address,
+        value: 4,
+      });
+
+      expect(await payouts.connect(acct1).getBalance()).to.equal(0);
+      expect(await payouts.connect(acct2).getBalance()).to.equal(1);
+      expect(await payouts.connect(acct3).getBalance()).to.equal(3);
+    });    
+    
+    it("Should update when payee allocations are edited", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.addPayee(acct3.address, 1);
+
+      await acct1.sendTransaction({
+        to: payouts.address,
+        value: 4,
+      });
+
+      expect(await payouts.connect(acct1).getBalance()).to.equal(0);
+      expect(await payouts.connect(acct2).getBalance()).to.equal(2);
+      expect(await payouts.connect(acct3).getBalance()).to.equal(2);
+
+      await payouts.editPayee(acct2.address, acct2.address, 2);
+      await payouts.editPayee(acct3.address, acct4.address, 1);
+
+      await acct1.sendTransaction({
+        to: payouts.address,
+        value: 6,
+      });
+
+      expect(await payouts.connect(acct1).getBalance()).to.equal(0);
+      expect(await payouts.connect(acct2).getBalance()).to.equal(6);
+      expect(await payouts.connect(acct3).getBalance()).to.equal(2);
+      expect(await payouts.connect(acct4).getBalance()).to.equal(2);
+    });
+
+    it("Should deliver any remaining wei to the senders balance", async () => {
+      await payouts.addPayee(acct2.address, 1);
+      await payouts.addPayee(acct3.address, 2);
+
+      await acct1.sendTransaction({
+        to: payouts.address,
+        value: 5,
+      });
+
+      expect(await payouts.connect(acct1).getBalance()).to.equal(2);
+      expect(await payouts.connect(acct2).getBalance()).to.equal(1);
+      expect(await payouts.connect(acct3).getBalance()).to.equal(2);
+    }); 
   });
 });
