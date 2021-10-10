@@ -100,9 +100,13 @@ contract Payouts {
         }
     }
 
-    // function withdraw() public {
-
-    // }
+    function withdraw() public {
+        require(balances[msg.sender] > 0, "You have no funds to withdraw");
+        uint balance = balances[msg.sender];
+        balances[msg.sender] = 0;
+        (bool sent, ) = msg.sender.call{value: balance}("");
+        require(sent, "Failed to withdraw Ether");
+    }
 
     receive() external payable {
         require(activated[msg.sender], "This payout is not active");

@@ -213,4 +213,31 @@ describe("Payouts contract", () => {
       expect(await payouts.connect(acct3).getBalance()).to.equal(2);
     }); 
   });
+
+  describe("Withdrawing", () => {
+    it("Should allow a payee to withdraw funds", async () => {
+      const originalBalance = await acct2.getBalance();
+      const payment = 5;
+
+      await payouts.addPayee(acct2.address, 1);
+
+      await acct1.sendTransaction({
+        to: payouts.address,
+        value: payment,
+      });
+
+      const tx = await payouts.connect(acct2).withdraw();
+      const receipt = await tx.wait();
+      const txCost = receipt.gasUsed.mul(receipt.effectiveGasPrice)
+      const finalBalance = originalBalance.add(payment).sub(txCost);
+
+      expect(await acct2.getBalance()).to.equal(finalBalance);
+    });    
+    
+    it("Should prevent withdrawing when no funds are available", async () => {
+      await expect(
+        payouts.connect(acct2).withdraw()
+      ).to.be.revertedWith("You have no funds to withdraw");
+    });
+  });
 });
