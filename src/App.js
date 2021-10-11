@@ -3,6 +3,7 @@ import { useEthereum } from "./providers/EthereumProvider";
 import { usePayouts } from "./providers/PayoutsProvider";
 import { useEffect, useCallback, useState } from "react";
 import "./App.css";
+import IncomingPaymentsCard from "./components/IncomingPaymentsCard";
 
 function App() {
   const { address, signer } = useEthereum();
@@ -13,7 +14,6 @@ function App() {
   const [addressInputValue, setAddressInputValue] = useState();
   const [splitInputValue, setSplitInputValue] = useState();
   const [paymentInputValue, setPaymentInputValue] = useState("");
-  const [balance, setBalance] = useState();
 
   const getPayees = useCallback(async () => {
     try {
@@ -24,21 +24,9 @@ function App() {
     }
   }, [payouts]);
 
-  const getBalance = useCallback(async () => {
-    try {
-      const userBalance = await payouts.getBalance();
-      let res = ethers.utils.formatEther(userBalance);
-      res = Math.round(res * 1e4) / 1e4;
-      setBalance(res);
-    } catch (err) {
-      console.log("Error: ", err)
-    }
-  }, [payouts]);
-
   useEffect(() => {
     getPayees();
-    getBalance();
-  }, [getPayees, getBalance]);
+  }, [getPayees]);
 
   useEffect(() => {
     let splitCount = 0;
@@ -75,12 +63,6 @@ function App() {
     setPaymentInputValue("");
   }
 
-  const withdraw = async () => {
-    const transaction = await payouts.withdraw();
-    await transaction.wait();
-    getBalance();
-  } 
-
   const estimatePayment = (totalPayment, split) => 
     totalPayment > 0 ? totalPayment / totalSplit * split : 0;
 
@@ -103,11 +85,7 @@ function App() {
               <input type="number" value={paymentInputValue} onChange={e => setPaymentInputValue(e.target.value)} placeholder="Enter payment amount in ETH..." />
               <button onClick={sendPayment}>Send</button>
             </div>
-            <div className="Card">
-              <h2>Incoming payments</h2>
-              <p>{balance >= 0 && balance} ETH</p>
-              <button onClick={withdraw}>Withdraw</button>
-            </div>
+            <IncomingPaymentsCard />
           </div>
 
           <div className="PayeeCard">
