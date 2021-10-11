@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
-import { useCallback } from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 const EthereumContext = createContext();
 
