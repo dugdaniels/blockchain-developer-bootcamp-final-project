@@ -14,15 +14,6 @@ function App() {
   const getPayees = useCallback(async () => {
     try {
       const payeeList = await payouts.getPayees();
-      // const payeeList = [];
-      // for (const address of payeeAddresses) {
-      //   const payee = {
-      //     address,
-      //     split: await payouts.getPayeeSplit(address)
-      //   }
-      //   payeeList.push(payee);
-      // }
-      console.log(payeeList);
       setPayees(payeeList);
     } catch (err) {
       console.log("Error: ", err)
