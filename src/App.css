@@ -1,3 +1,152 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: #FAFAFA;
+}
+
 .App {
-  text-align: center;
+  padding: 16px;
+}
+
+.PayeeCard {
+  margin: 16px;
+  padding: 32px 0;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .08);
+  overflow: hidden;
+  background-color: white;
+}
+
+.PayeeCard h2 {
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0 0 16px 32px;
+}
+
+.PayeeCard table,
+.PayeeCard tr {
+  max-width: 100%;
+  font-size: 15px;
+}
+
+.PayeeCard td {
+  border-top: 1px solid #F4F4F4;
+  height: 32px;
+  padding: 0 32px;
+  white-space: nowrap;
+}
+
+.PayeeCard .address,
+.PayeeCard .address {
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.PayeeCard .buttons {
+  width: 0;
+}
+
+.PayeeCard table button {
+  border: none;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 16px;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 0 0 0 8px;
+  color: #276EF1;
+}
+
+.PayeeCard table button:hover {
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.PayeeCard thead {
+  font-size: 13px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.PayeeCard th {
+  text-align: start;
+  height: 32px;
+  padding: 0 32px;
+  font-size: 13px;
+}
+
+.CardRow {
+  width: 100%;
+  display: flex;
+}
+
+.Card {
+  width: 100%;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .08);
+  margin: 16px;
+  background-color: white;
+}
+
+.Card h2 {
+  font-size: 20px;
+  font-weight: 900;
+  margin: 0 0 16px 0;
+}
+
+.Card p {
+  margin: 0;
+}
+
+.Card button {
+  border: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background-color: #276EF1;
+  color: white;
+  cursor: pointer;
+  margin: 24px 0 0;
+}
+
+.Card button:hover {
+  box-shadow: 0 4px 20px 0 rgba(39, 110, 241, .5);
+}
+
+input {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 15px;
+  border: 1px solid #A3A3A3;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+input:hover {
+  border: 1px solid #727272;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: block;
 }
