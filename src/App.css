@@ -150,3 +150,12 @@ label {
   margin-bottom: 6px;
   display: block;
 }
+
+.Error {
+  color: #A1254A;
+  border: 1px solid #E9376C;
+  border-radius: 6px;
+  background-color: rgba(233, 55, 108, 0.25);
+  padding: 12px;
+  margin-top: 20px;
+}

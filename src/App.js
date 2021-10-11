@@ -1,19 +1,19 @@
-import { ethers } from "ethers";
 import { useEthereum } from "./providers/EthereumProvider";
 import { usePayouts } from "./providers/PayoutsProvider";
 import { useEffect, useCallback, useState } from "react";
 import "./App.css";
 import IncomingPaymentsCard from "./components/IncomingPaymentsCard";
+import PayoutsCard from "./components/PayoutsCard";
 
 function App() {
-  const { address, signer } = useEthereum();
+  const { address } = useEthereum();
   const payouts = usePayouts();
 
   const [payees, setPayees] = useState([]);
   const [totalSplit, setTotalSplit] = useState();
+  const [paymentInputValue, setPaymentInputValue] = useState("");
   const [addressInputValue, setAddressInputValue] = useState();
   const [splitInputValue, setSplitInputValue] = useState();
-  const [paymentInputValue, setPaymentInputValue] = useState("");
 
   const getPayees = useCallback(async () => {
     try {
@@ -53,15 +53,6 @@ function App() {
     await transaction.wait();
     getPayees();
   }  
-  
-  const sendPayment = async () => {
-    const transaction = await signer.sendTransaction({
-        to: payouts.address,
-        value: ethers.utils.parseEther(paymentInputValue)
-    });
-    await transaction.wait();
-    setPaymentInputValue("");
-  }
 
   const estimatePayment = (totalPayment, split) => 
     totalPayment > 0 ? totalPayment / totalSplit * split : 0;
@@ -79,12 +70,7 @@ function App() {
               <input onChange={e => setSplitInputValue(e.target.value)} placeholder="Enter payee split..." />
               <button onClick={addPayee}>Add payee</button>
             </div>
-            <div className="Card">
-              <h2>Send payment to split</h2>
-              <label>Amount</label>
-              <input type="number" value={paymentInputValue} onChange={e => setPaymentInputValue(e.target.value)} placeholder="Enter payment amount in ETH..." />
-              <button onClick={sendPayment}>Send</button>
-            </div>
+            <PayoutsCard setPaymentInputValue={setPaymentInputValue} paymentInputValue={paymentInputValue}/>
             <IncomingPaymentsCard />
           </div>
 
@@ -102,7 +88,7 @@ function App() {
                 </thead>
                 <tbody>
                   {payees.map(payee => 
-                    <tr>
+                    <tr key={payee.accountAddress}>
                       <td className="address">{payee.accountAddress}</td>
                       <td>{payee.split.toNumber()}</td>
                       <td>{estimatePayment(paymentInputValue, payee.split.toNumber())} ETH</td>

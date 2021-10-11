@@ -5,6 +5,7 @@ import { usePayouts } from "../providers/PayoutsProvider";
 function IncomingPaymentsCard() {
   const payouts = usePayouts();
   const [balance, setBalance] = useState();
+  const [error, setError] = useState();
 
   const getBalance = useCallback(async () => {
     try {
@@ -13,7 +14,7 @@ function IncomingPaymentsCard() {
       res = Math.round(res * 1e4) / 1e4;
       setBalance(res);
     } catch (err) {
-      console.log("Error: ", err)
+      setError(err.message);
     }
   }, [payouts]);
 
@@ -22,15 +23,20 @@ function IncomingPaymentsCard() {
   }, [getBalance]);
 
   const withdraw = async () => {
-    const transaction = await payouts.withdraw();
-    await transaction.wait();
-    getBalance();
+    try {
+      const transaction = await payouts.withdraw();
+      await transaction.wait();
+      getBalance(); 
+    } catch (err) {
+      setError(err.data.message);
+    }
   } 
 
   return (
     <div className="Card">
       <h2>Incoming payments</h2>
       <p>{balance >= 0 && balance} ETH</p>
+      {error && <div className="Error">{error}</div>}
       <button onClick={withdraw}>Withdraw</button>
     </div>
   )
