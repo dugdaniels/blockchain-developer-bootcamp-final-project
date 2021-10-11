@@ -13,15 +13,16 @@ function App() {
 
   const getPayees = useCallback(async () => {
     try {
-      const payeeAddresses = await payouts.getPayees();
-      const payeeList = [];
-      for (const address of payeeAddresses) {
-        const payee = {
-          address,
-          split: await payouts.getPayeeSplit(address)
-        }
-        payeeList.push(payee);
-      }
+      const payeeList = await payouts.getPayees();
+      // const payeeList = [];
+      // for (const address of payeeAddresses) {
+      //   const payee = {
+      //     address,
+      //     split: await payouts.getPayeeSplit(address)
+      //   }
+      //   payeeList.push(payee);
+      // }
+      console.log(payeeList);
       setPayees(payeeList);
     } catch (err) {
       console.log("Error: ", err)
@@ -64,7 +65,7 @@ function App() {
           {payees.length > 0 ? 
             payees.map(payee => 
               <p>
-                Address: {payee.address} 
+                Address: {payee.accountAddress} 
                 Split: {payee.split.toNumber()}
                 <button onClick={() => removePayee(payee.address)}>Remove</button>
               </p>

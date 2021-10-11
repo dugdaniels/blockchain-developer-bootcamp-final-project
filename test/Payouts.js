@@ -36,8 +36,8 @@ describe("Payouts contract", () => {
     it("Should allow a payee to be added", async () => {
       await payouts.addPayee(acct2.address, 1);
       const payeeList = await payouts.getPayees();
-      expect(payeeList[0]).to.equal(acct2.address);
-      expect(await payouts.getPayeeSplit(payeeList[0])).to.equal(1);
+      expect(payeeList[0].accountAddress).to.equal(acct2.address);
+      expect(payeeList[0].split).to.equal(1);
     });
 
     it("Should allow multiple payees to be added", async () => {
@@ -86,8 +86,8 @@ describe("Payouts contract", () => {
       payeeList = await payouts.getPayees();
       expect(payeeList.length).to.equal(2);
 
-      expect(payeeList[0]).to.equal(acct2.address);
-      expect(payeeList[1]).to.equal(acct4.address);
+      expect(payeeList[0].accountAddress).to.equal(acct2.address);
+      expect(payeeList[1].accountAddress).to.equal(acct4.address);
     });
 
     it("Should set a payee split to zero when removed", async () => {
@@ -115,7 +115,7 @@ describe("Payouts contract", () => {
       await payouts.editPayee(acct2.address, acct3.address, 1);
 
       payeeList = await payouts.getPayees();
-      expect(payeeList[0]).to.equal(acct3.address);
+      expect(payeeList[0].accountAddress).to.equal(acct3.address);
 
       expect(await payouts.getPayeeSplit(acct2.address)).to.equal(0);
       expect(await payouts.getPayeeSplit(acct3.address)).to.equal(1);

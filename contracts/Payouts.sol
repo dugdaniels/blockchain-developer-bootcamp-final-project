@@ -5,6 +5,11 @@ import "hardhat/console.sol";
 
 contract Payouts {    
 
+    struct Payee {
+        address accountAddress;
+        uint split;
+    }
+
     mapping(address => uint) balances;
 
     mapping(address => bool) activated;
@@ -73,8 +78,17 @@ contract Payouts {
         }
     }
 
-    function getPayees() public view returns (address[] memory) {
-        return payees[msg.sender];
+    function getPayees() public view returns (Payee[] memory) {
+        uint payeeCount = payees[msg.sender].length;
+        Payee[] memory payeeList = new Payee[](payeeCount);
+        for (uint i; i < payeeCount; i++) {
+            Payee memory payee = Payee({
+                accountAddress: payees[msg.sender][i],
+                split: splits[msg.sender][payees[msg.sender][i]]
+            });
+            payeeList[i] = payee;
+        }
+        return payeeList;
     }
 
     function getPayeeSplit(address _payeeAddress) public view returns (uint) {
