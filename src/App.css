@@ -105,6 +105,14 @@ body {
   box-shadow: 0 4px 20px 0 rgba(39, 110, 241, .5);
 }
 
+.Empty {
+  background-color: #F4F4F4;
+  border-radius: 8px;
+  margin: 0 32px;
+  padding: 8px 24px;
+  font-size: 15px;
+}
+
 .CardRow {
   width: 100%;
   display: flex;

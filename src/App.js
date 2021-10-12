@@ -94,11 +94,13 @@ function App() {
                   )}
                 </tbody>
               </table> :
-              <p>No payees have been added yet</p>
+              <div className="Empty">
+                <p>No recipients have been added yet</p>
+              </div>
             }
             <button onClick={() => showModal(false)}>Add recipient</button>
           </div>
-          
+
           {modalIsVisible && <EditRecipientsModal payeeInfo={payeeInfo} hideModal={hideModal}/>}
         </>
       : null}
