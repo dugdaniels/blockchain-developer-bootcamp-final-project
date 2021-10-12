@@ -70,6 +70,7 @@ body {
 .PayeeCard table button:hover {
   background-color: transparent;
   text-decoration: underline;
+  box-shadow: none;
 }
 
 .PayeeCard thead {
@@ -83,6 +84,25 @@ body {
   height: 32px;
   padding: 0 32px;
   font-size: 13px;
+}
+
+.PayeeCard button {
+  border: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background-color: #276EF1;
+  color: white;
+  cursor: pointer;
+  margin: 24px 0 0 32px;
+}
+
+.PayeeCard button:hover {
+  box-shadow: 0 4px 20px 0 rgba(39, 110, 241, .5);
 }
 
 .CardRow {
@@ -158,4 +178,36 @@ label {
   background-color: rgba(233, 55, 108, 0.25);
   padding: 12px;
   margin-top: 20px;
+}
+
+.Backdrop {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, .08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Modal {
+  position: static;
+  width: 50%;
+}
+
+.ButtonRow {
+  display: flex;
+}
+
+.ButtonRow button:last-child {
+  margin-left: 16px;
+  background: transparent;
+  color: #276EF1;
+}
+
+.ButtonRow button:last-child:hover {
+  box-shadow: none;
+  text-decoration: underline;
 }

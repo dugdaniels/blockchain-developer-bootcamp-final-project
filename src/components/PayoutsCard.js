@@ -14,7 +14,9 @@ function PayoutsCard({ paymentInputValue, setPaymentInputValue }) {
   
   const sendPayment = async () => {
     try {
-      if (paymentInputValue == 0) throw "Error: You must provide an amount."
+      if (!paymentInputValue || paymentInputValue <= 0) {
+        throw new Error("Error: You must provide an amount.")
+      }
       const transaction = await signer.sendTransaction({
           to: payouts.address,
           value: ethers.utils.parseEther(paymentInputValue)
@@ -22,7 +24,7 @@ function PayoutsCard({ paymentInputValue, setPaymentInputValue }) {
       await transaction.wait();
       setPaymentInputValue("");
     } catch (err) {
-      setError(err);
+      setError(err.message);
     }
   }
 
