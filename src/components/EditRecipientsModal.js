@@ -18,7 +18,7 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
       setSplitInputValue();
       hideModal(true);
     } catch (err) {
-      console.log(err)
+      setError(err.message);
     }
   }
 
@@ -33,7 +33,7 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
       setSplitInputValue();
       hideModal(true);
     } catch (err) {
-      console.log(err)
+      setError(err.message);
     }
   }
 
@@ -45,7 +45,7 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
         <input 
           value={addressInputValue} 
           onChange={e => setAddressInputValue(e.target.value)} 
-          placeholder="Enter payee address..." 
+          placeholder="Enter recipient address..." 
         />
         <label>Split</label>
         <select 
@@ -65,8 +65,8 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
         {error && <div className="Error">{error}</div>}
         <div className="ButtonRow">
           {payeeInfo ?
-            <button onClick={editPayee}>Save changes</button> :
-            <button onClick={addPayee}>Add payee</button> 
+            <button onClick={editPayee}>Apply updates</button> :
+            <button onClick={addPayee}>Add recipient</button> 
           }
           <button onClick={() => hideModal(false)}>Cancel</button>
         </div>

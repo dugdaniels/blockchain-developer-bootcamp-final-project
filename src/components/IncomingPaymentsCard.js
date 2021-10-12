@@ -31,7 +31,7 @@ function IncomingPaymentsCard() {
       await transaction.wait();
       getBalance(); 
     } catch (err) {
-      setError(err.data.message);
+      setError(err.message);
     }
   } 
 
