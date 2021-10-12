@@ -9,25 +9,31 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
 
   const addPayee = async () => {
     try {
+      if (!addressInputValue) {
+        throw new Error("You must provide a recipient address.")
+      }
       const transaction = await payouts.addPayee(addressInputValue, splitInputValue);
       await transaction.wait();
       setAddressInputValue();
       setSplitInputValue();
       hideModal(true);
     } catch (err) {
-      console.log("Error: ", err)
+      console.log(err)
     }
   }
 
   const editPayee = async () => {
     try {
+      if (!addressInputValue) {
+        throw new Error("You must provide a recipient address.")
+      }
       const transaction = await payouts.editPayee(payeeInfo.accountAddress, addressInputValue, splitInputValue);
       await transaction.wait();
       setAddressInputValue();
       setSplitInputValue();
       hideModal(true);
     } catch (err) {
-      console.log("Error: ", err)
+      console.log(err)
     }
   }
 
@@ -42,11 +48,20 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
           placeholder="Enter payee address..." 
         />
         <label>Split</label>
-        <input 
+        <select 
           value={splitInputValue}
           onChange={e => setSplitInputValue(e.target.value)} 
-          placeholder="Enter payee split..." 
-        />
+        >
+          <option value={1}>1</option>
+          <option value={2}>2</option>
+          <option value={3}>3</option>
+          <option value={4}>4</option>
+          <option value={5}>5</option>
+          <option value={6}>6</option>
+          <option value={7}>7</option>
+          <option value={8}>8</option>
+          <option value={9}>9</option>
+        </select>
         {error && <div className="Error">{error}</div>}
         <div className="ButtonRow">
           {payeeInfo ?

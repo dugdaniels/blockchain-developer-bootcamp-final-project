@@ -15,7 +15,7 @@ function PayoutsCard({ paymentInputValue, setPaymentInputValue }) {
   const sendPayment = async () => {
     try {
       if (!paymentInputValue || paymentInputValue <= 0) {
-        throw new Error("Error: You must provide an amount.")
+        throw new Error("You must provide an amount.")
       }
       const transaction = await signer.sendTransaction({
           to: payouts.address,

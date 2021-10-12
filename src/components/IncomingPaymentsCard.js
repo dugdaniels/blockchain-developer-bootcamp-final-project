@@ -24,6 +24,9 @@ function IncomingPaymentsCard() {
 
   const withdraw = async () => {
     try {
+      if (balance <= 0) {
+        throw new Error("You have no funds to withdraw.")
+      }
       const transaction = await payouts.withdraw();
       await transaction.wait();
       getBalance(); 
