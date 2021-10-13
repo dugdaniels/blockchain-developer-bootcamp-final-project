@@ -194,6 +194,7 @@ label {
   background-color: rgba(233, 55, 108, 0.25);
   padding: 12px;
   margin-top: 20px;
+  font-size: 15px;
 }
 
 .Backdrop {
@@ -226,4 +227,18 @@ label {
 .ButtonRow button:last-child:hover {
   box-shadow: none;
   text-decoration: underline;
+}
+
+.Loader {
+  border: none;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background-color: #F4F4F4;
+  cursor: pointer;
+  margin: 24px 0 0;
 }

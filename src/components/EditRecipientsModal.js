@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { usePayouts } from "../providers/PayoutsProvider";
+import Button from "./Button";
 
 function EditRecipientsModal({ payeeInfo, hideModal }) {
   const payouts = usePayouts();
   const [addressInputValue, setAddressInputValue] = useState(payeeInfo.accountAddress);
   const [splitInputValue, setSplitInputValue] = useState(payeeInfo.split);
+  const [loading, setLoading] = useState();
   const [error, setError] = useState();
 
   const addPayee = async () => {
+    setLoading(true);
     try {
       if (!addressInputValue) {
         throw new Error("You must provide a recipient address.")
@@ -20,9 +23,11 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
     } catch (err) {
       setError(err.message);
     }
+    setLoading(false);
   }
 
   const editPayee = async () => {
+    setLoading(true);
     try {
       if (!addressInputValue) {
         throw new Error("You must provide a recipient address.")
@@ -35,12 +40,13 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
     } catch (err) {
       setError(err.message);
     }
+    setLoading(false);
   }
 
   return (
     <div className="Backdrop">
       <div className="Card Modal">
-        <h2>{payeeInfo ? "Edit" : "Add"} recipient</h2>
+        <h2>{payeeInfo.accountAddress ? "Edit" : "Add"} recipient</h2>
         <label>Address</label>
         <input 
           value={addressInputValue} 
@@ -64,11 +70,11 @@ function EditRecipientsModal({ payeeInfo, hideModal }) {
         </select>
         {error && <div className="Error">{error}</div>}
         <div className="ButtonRow">
-          {payeeInfo ?
-            <button onClick={editPayee}>Apply updates</button> :
-            <button onClick={addPayee}>Add recipient</button> 
+          {payeeInfo.accountAddress ?
+            <Button onClick={editPayee} loading={loading}>Apply updates</Button> :
+            <Button onClick={addPayee} loading={loading}>Add recipient</Button> 
           }
-          <button onClick={() => hideModal(false)}>Cancel</button>
+          {!loading && <button onClick={() => hideModal(false)}>Cancel</button>}
         </div>
       </div> 
     </div>

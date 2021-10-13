@@ -2,20 +2,26 @@ import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import { useEthereum } from "../providers/EthereumProvider";
 import { usePayouts } from "../providers/PayoutsProvider";
+import Button from "./Button";
 
-function PayoutsCard({ paymentInputValue, setPaymentInputValue }) {
+function PayoutsCard({ payees, paymentInputValue, setPaymentInputValue }) {
   const { signer } = useEthereum();
   const payouts = usePayouts();
   const [error, setError] = useState();
+  const [loading, setLoading] = useState();
 
   useEffect(() => {
     setError('');
   }, [paymentInputValue]);
   
   const sendPayment = async () => {
+    setLoading(true);
     try {
       if (!paymentInputValue || paymentInputValue <= 0) {
         throw new Error("You must provide an amount.")
+      }
+      if (payees.length === 0) {
+        throw new Error("You must add at least one recipient.")
       }
       const transaction = await signer.sendTransaction({
           to: payouts.address,
@@ -26,6 +32,7 @@ function PayoutsCard({ paymentInputValue, setPaymentInputValue }) {
     } catch (err) {
       setError(err.message);
     }
+    setLoading(false);
   }
 
   return (
@@ -34,7 +41,7 @@ function PayoutsCard({ paymentInputValue, setPaymentInputValue }) {
       <label>Amount</label>
       <input type="number" value={paymentInputValue} onChange={e => setPaymentInputValue(e.target.value)} placeholder="Enter payment amount in ETH..." />
       {error && <div className="Error">{error}</div>}
-      <button onClick={sendPayment}>Send</button>
+      <Button onClick={sendPayment} loading={loading}>Send payment</Button>
     </div>
   )
 }

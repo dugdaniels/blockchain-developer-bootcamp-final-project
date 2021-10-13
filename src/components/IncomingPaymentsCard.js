@@ -1,10 +1,12 @@
 import { ethers } from "ethers";
 import { useEffect, useCallback, useState } from "react";
 import { usePayouts } from "../providers/PayoutsProvider";
+import Button from "./Button";
 
 function IncomingPaymentsCard() {
   const payouts = usePayouts();
   const [balance, setBalance] = useState();
+  const [loading, setLoading] = useState();
   const [error, setError] = useState();
 
   const getBalance = useCallback(async () => {
@@ -23,6 +25,7 @@ function IncomingPaymentsCard() {
   }, [getBalance]);
 
   const withdraw = async () => {
+    setLoading(true);
     try {
       if (balance <= 0) {
         throw new Error("You have no funds to withdraw.")
@@ -33,6 +36,7 @@ function IncomingPaymentsCard() {
     } catch (err) {
       setError(err.message);
     }
+    setLoading(false);
   } 
 
   return (
@@ -40,7 +44,7 @@ function IncomingPaymentsCard() {
       <h2>Incoming payments</h2>
       <p>{balance >= 0 && balance} ETH</p>
       {error && <div className="Error">{error}</div>}
-      <button onClick={withdraw}>Withdraw</button>
+      <Button onClick={withdraw} loading={loading}>Withdraw</Button>
     </div>
   )
 }

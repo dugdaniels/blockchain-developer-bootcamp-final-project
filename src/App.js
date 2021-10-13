@@ -5,6 +5,7 @@ import "./App.css";
 import EditRecipientsModal from "./components/EditRecipientsModal";
 import IncomingPaymentsCard from "./components/IncomingPaymentsCard";
 import PayoutsCard from "./components/PayoutsCard";
+import Button from "./components/Button";
 
 function App() {
   const { address } = useEthereum();
@@ -14,7 +15,7 @@ function App() {
   const [totalSplit, setTotalSplit] = useState();
   const [paymentInputValue, setPaymentInputValue] = useState("");
   const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [payeeInfo, setPayeeInfo] = useState();
+  const [payeeInfo, setPayeeInfo] = useState({accountAddress: "", split: 1});
 
   const getPayees = useCallback(async () => {
     try {
@@ -47,7 +48,7 @@ function App() {
     totalPayment > 0 ? totalPayment / totalSplit * split : 0;
 
   const showModal = (payee) => {
-    setPayeeInfo(payee);
+    if (payee) setPayeeInfo(payee);
     setModalIsVisible(true)
   }
 
@@ -61,7 +62,7 @@ function App() {
       {address ? 
         <>
           <div className="CardRow">
-            <PayoutsCard setPaymentInputValue={setPaymentInputValue} paymentInputValue={paymentInputValue}/>
+            <PayoutsCard payees={payees} setPaymentInputValue={setPaymentInputValue} paymentInputValue={paymentInputValue}/>
             <IncomingPaymentsCard />
           </div>
 
@@ -98,7 +99,7 @@ function App() {
                 <p>No recipients have been added yet</p>
               </div>
             }
-            <button onClick={() => showModal(false)}>Add recipient</button>
+            <Button onClick={() => showModal(null)}>Add recipient</Button>
           </div>
 
           {modalIsVisible && <EditRecipientsModal payeeInfo={payeeInfo} hideModal={hideModal}/>}
