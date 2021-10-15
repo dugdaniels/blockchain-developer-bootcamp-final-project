@@ -156,6 +156,10 @@ body {
   box-shadow: 0 4px 20px 0 rgba(39, 110, 241, .5);
 }
 
+input {
+  margin-bottom: 16px;
+}
+
 input,
 select {
   height: 32px;
@@ -166,7 +170,6 @@ select {
   border: 1px solid #A3A3A3;
   border-radius: 6px;
   width: 100%;
-  margin-bottom: 16px;
 }
 
 select {
