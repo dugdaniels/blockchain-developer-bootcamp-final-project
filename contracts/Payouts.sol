@@ -2,8 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 contract Payouts {    
+
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     struct Payee {
         address accountAddress;
@@ -13,12 +16,12 @@ contract Payouts {
     mapping(address => uint) balances;
 
     mapping(address => bool) activated;
-    mapping(address => address[]) payees;
+    mapping(address => EnumerableSet.AddressSet) payees;
     mapping(address => uint) totalAllocations;
     mapping(address => mapping(address => uint)) splits;
 
     function _updateActivated(address _payoutsAddress) internal {
-        if (payees[_payoutsAddress].length == 0 && activated[_payoutsAddress]) {
+        if (EnumerableSet.length(payees[_payoutsAddress]) == 0 && activated[_payoutsAddress]) {
             activated[_payoutsAddress] = false;
         } else if (!activated[_payoutsAddress]) {
             activated[_payoutsAddress] = true;
@@ -34,7 +37,7 @@ contract Payouts {
         require(_payeeAddress != address(0), "Can't add the zero address as a payee");
         require(_payeeSplit > 0, "You must allocate a non-zero split");
 
-        payees[msg.sender].push(_payeeAddress);
+        EnumerableSet.add(payees[msg.sender], _payeeAddress);
         totalAllocations[msg.sender] += _payeeSplit;
         splits[msg.sender][_payeeAddress] = _payeeSplit;
 
@@ -42,19 +45,10 @@ contract Payouts {
     }
 
     function removePayee(address _payeeAddress) public {
-        require(splits[msg.sender][_payeeAddress] > 0, "Account not listed added as a payee");
+        require(splits[msg.sender][_payeeAddress] > 0, "Account not listed as a payee");
+        EnumerableSet.AddressSet storage payeeList = payees[msg.sender];
+        EnumerableSet.remove(payeeList, _payeeAddress);
 
-        address[] storage payeeList = payees[msg.sender];
-
-        uint index;
-        for (index; index < payeeList.length; index++) {
-            if (payeeList[index] == _payeeAddress) {
-                break;
-            }
-        }
-
-        payeeList[index] = payeeList[payeeList.length - 1];
-        payeeList.pop();
         totalAllocations[msg.sender] -= splits[msg.sender][_payeeAddress];
         splits[msg.sender][_payeeAddress] = 0;
         
@@ -79,12 +73,12 @@ contract Payouts {
     }
 
     function getPayees() public view returns (Payee[] memory) {
-        uint payeeCount = payees[msg.sender].length;
+        uint payeeCount = EnumerableSet.length(payees[msg.sender]);
         Payee[] memory payeeList = new Payee[](payeeCount);
         for (uint i; i < payeeCount; i++) {
             Payee memory payee = Payee({
-                accountAddress: payees[msg.sender][i],
-                split: splits[msg.sender][payees[msg.sender][i]]
+                accountAddress: EnumerableSet.at(payees[msg.sender], i),
+                split: splits[msg.sender][EnumerableSet.at(payees[msg.sender], i)]
             });
             payeeList[i] = payee;
         }
@@ -100,10 +94,10 @@ contract Payouts {
     }
 
     function routePayment(uint _paymentValue) internal {
-        if (_paymentValue < payees[msg.sender].length) {
+        if (_paymentValue < EnumerableSet.length(payees[msg.sender])) {
             balances[msg.sender] += _paymentValue;
         } else {
-            address[] storage payeeList = payees[msg.sender];
+            address[] memory payeeList = EnumerableSet.values(payees[msg.sender]);
             uint remainingInPayment = _paymentValue;
             for (uint i; i < payeeList.length; i++) {
                 uint payment = _paymentValue / totalAllocations[msg.sender] * splits[msg.sender][payeeList[i]];

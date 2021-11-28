@@ -99,7 +99,7 @@ describe("Payouts contract", () => {
     it("Should only allow removing payees that have a split allocated", async () => {
       await expect(
         payouts.removePayee(acct2.address)
-      ).to.be.revertedWith("Account not listed added as a payee");
+      ).to.be.revertedWith("Account not listed as a payee");
     });
 
     it("Should set the payout to inactive if all payees are removed", async () => {
@@ -124,7 +124,7 @@ describe("Payouts contract", () => {
     it("Should only allow editing currently allocated payees", async () => {
       await expect(
         payouts.editPayee(acct2.address, acct3.address, 1)
-      ).to.be.revertedWith("Account not listed added as a payee");
+      ).to.be.revertedWith("Account not listed as a payee");
     });        
     
     it("Should prevent a payees address from being changed to the zero account", async () => {
