@@ -3,7 +3,8 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useEthereum } from "./EthereumProvider";
 import Payouts from "../artifacts/contracts/Payouts.sol/Payouts.json";
 
-const CONTRACT_ADDRESS = '0x6dB3CD9ca82d5d6f91531F1d01E5D26D4F5D1dAd'
+// const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'   // Hardhat
+const CONTRACT_ADDRESS = '0x6dB3CD9ca82d5d6f91531F1d01E5D26D4F5D1dAd'   // Rinkeby
 
 const PayoutsContext = createContext();
 

@@ -22,4 +22,18 @@ A single deployment of the contract provides this split functionality to anyone 
 ├── README.md
 └── ...
 
+## Installing dependencies
 
+You need Node.js `12.0` or newer installed, then after cloning the repo, run `npm install` to install project dependencies locally
+
+## Running smart contract unit tests
+
+Run `npx hardhat test` to run the smart contract unit tests locally
+
+## Accessing the project
+
+The public version of the app can be viewed at [https://blockchain-developer-bootcamp-final-project-10zy34fhq.vercel.app/](https://blockchain-developer-bootcamp-final-project-10zy34fhq.vercel.app/). You'll need to connect your wallet via the Rinkey network. 
+
+## Screencast
+
+A walkthrough of the project can be viewed [here](https://www.loom.com/share/29a8aa30cd0047fc9d679aa5e21ef87b).
