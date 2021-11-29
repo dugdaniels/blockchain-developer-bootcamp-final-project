@@ -24,6 +24,12 @@ const EthereumProvider = (props) => {
     if (!ethereum) {
       updateProvider(ethers.getDefaultProvider());
     } else {
+      ethereum.on("accountsChanged", function (accounts) {
+        setAddress(accounts)
+      })
+      ethereum.on('chainChanged', () => {
+        window.location.reload();
+      });
       updateProvider(new ethers.providers.Web3Provider(window.ethereum));
     }
   }, []);
