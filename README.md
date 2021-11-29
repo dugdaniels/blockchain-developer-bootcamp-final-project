@@ -17,6 +17,7 @@ A single deployment of the contract provides this split functionality to anyone 
 ├── src                             # Source files for the React frontend
 ├── test                            # Smart contract unit tests
 ├── avoiding_common_attacks.md
+├── deployed_address.txt
 ├── design_pattern_decisions.md
 ├── README.md
 └── ...
